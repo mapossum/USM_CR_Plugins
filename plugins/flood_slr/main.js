@@ -133,6 +133,16 @@ define([
 				_infographic = localrequire.toUrl("./" + _infographic);
 			
 			}
+			
+			if (_config.ddText != undefined) {
+			
+				_ddText = _config.ddText;
+			
+			} else {
+			
+				_ddText = "Choose a Region";
+			
+			}
 					
            return declare(PluginBase, {
 		       toolbarName: _config.name,
@@ -196,7 +206,7 @@ define([
 						this.map.removeLayer(clayer);
 					}));
 					
-					this.button.set("label","Choose a Region");
+					this.button.set("label",_ddText);
 					
 					domConstruct.empty(this.mainpane.domNode);
 					
@@ -234,7 +244,7 @@ define([
 					
 
 					this.button = new DropDownButton({
-						label: "Choose a Region",
+						label: _ddText,
 						style: "margin-bottom:6px !important",
 						dropDown: menu
 					});
@@ -580,7 +590,6 @@ define([
 					
 					}));
 					
-					
 					array.forEach(this.myLayers, lang.hitch(this,function(clayer, i){
 						this.map.removeLayer(clayer);
 					}));
@@ -594,7 +603,7 @@ define([
 						this.myLayers.push(clayer);
 					}));					
 					
-			
+					this.changeOpacity(this.translevel);
 					
 					//this.subTitle = title1.join(" - ").replace("<br>"," ");
 					
@@ -1271,9 +1280,13 @@ define([
 				
 				changeOpacity: function(e) {
 					
+					this.translevel = e;
+					
 					array.forEach(this.myLayers, lang.hitch(this,function(clayer, i){						
-						clayer.setOpacity(1 - e);
+						clayer.setOpacity(1 - this.translevel);
 					}));
+				
+					
 				
 				},
 				
