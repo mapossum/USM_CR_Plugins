@@ -4,6 +4,24 @@ ehthumbs.db
 
 # Folder config file
 Desktop.ini
+App_Data
+bin
+css
+img
+js
+logs
+origplugins
+sample_plugins
+Scripts
+Views
+Error.html
+Error404.html
+Global.asax
+partners.html
+proxy.ashx
+proxy.config
+region.json
+Web.config
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
