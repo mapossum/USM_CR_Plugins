@@ -604,48 +604,6 @@ define([
 					}));					
 					
 					this.changeOpacity(this.translevel);
-					
-					//this.subTitle = title1.join(" - ").replace("<br>"," ");
-					
-					
-					/*
-					
-											dojo.connect(clayer, "onUpdateStart", lang.hitch(this,function () {
-								console.log("Update started...");
-								domAttr.set(this.refreshnode, "style", "display:");
-							} ));
-
-						dojo.connect(clayer, "onUpdateEnd", lang.hitch(this,function () {
-								//console.log(this.currentLayer.fullExtent)
-								console.log("Update Ended...");
-								domAttr.set(this.refreshnode, "style", "display:none");
-							} ));
-							
-							
-					*/
-					
-					
-					//domConstruct.empty(this.charttitle);
-					//newnode = domConstruct.create("span", {innerHTML: "<b> Year: " + this.currentgeography.years[this.Yearslider.value].name + "    Sea Level Rise: " +  this.currentgeography.slrs[this.SLRslider.value].name});
-					//this.charttitle.appendChild(newnode);					
-					
-					//console.log(this.currentgeography.root + "_" + slrval + "_" + yearval)
-					
-					
-					//mr = new MosaicRule(
-					//						{
-					//							"method" : "esriMosaicAttribute",
-					//							"where" : this.currentgeography.field + " = '" + outname + "'",
-					//							"operation" : "MT_FIRST",
-					//							"sortField" : this.currentgeography.field,
-					//							"sortValue" : outname
-					//						  }
-					//);
-					
-						
-					//this.mainLayer.setMosaicRule(mr);
-					
-					//this.applyFilter();
 			   
 			   },
 			   

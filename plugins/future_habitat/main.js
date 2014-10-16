@@ -61,6 +61,7 @@ define([
 		
 		"dojox/charting/Chart", 
 		"dojox/charting/plot2d/Pie",
+		"dojox/charting/plot2d/Bars",
 		"dojox/charting/action2d/Highlight",
         "dojox/charting/action2d/MoveSlice" , 
 		"dojox/charting/action2d/Tooltip",
@@ -125,6 +126,7 @@ define([
 					
 					Chart,
 					Pie,
+					Bars,
 					Highlight, 
 					MoveSlice, 
 					Tooltip, 
@@ -217,6 +219,8 @@ define([
 					this.button.set("label","Choose a Region");
 					
 					domConstruct.empty(this.mainpane.domNode);
+					
+
 					
 			   
 			   },
@@ -358,7 +362,9 @@ define([
 					
 					}
 				
-
+					if (this.comppane != undefined) {
+							this.tabpan.removeChild(this.comppane);
+					}
 					
 					if (this.currentgeography.initialCondition != undefined) {
 					
@@ -371,13 +377,17 @@ define([
 						
 						parser.parse();
 						
+					inac = dojoquery(this.comppane.domNode).children(".chartareacontenter");
+					this.compchartareacontent = inac[0];
+					
+					inac = dojoquery(this.comppane.domNode).children(".tableareacontenter");
+					this.comptableareacontent = inac[0];
+						
 						this.tabpan.addChild(this.comppane);
 					
 					} else {
 
-						if (this.comppane != undefined) {
-							this.tabpan.removeChild(this.comppane);
-						}
+
 					}
 					
 			   
@@ -693,7 +703,6 @@ define([
 					
 					//console.log(this.currentgeography.root + "_" + slrval + "_" + yearval)
 					
-					
 					mr = new MosaicRule(
 											{
 												"method" : "esriMosaicAttribute",
@@ -708,10 +717,10 @@ define([
 						this.icmr = new MosaicRule(
 												{
 													"method" : "esriMosaicAttribute",
-													"where" : this.currentgeography.field + " = '" + this.currentgeography.initialCondition + "'",
+													"where" : this.currentgeography.field + " = '" + this.currentgeography.root + this.currentgeography.initialCondition + "'",
 													"operation" : "MT_FIRST",
 													"sortField" : this.currentgeography.field,
-													"sortValue" : this.currentgeography.initialCondition
+													"sortValue" : this.currentgeography.root + this.currentgeography.initialCondition
 												  }
 						);
 					}
@@ -824,8 +833,57 @@ define([
 				
 				if ((this.regresults != undefined) && (this.icresults != undefined)) {
 				
-					//alert("compare now");
+					console.log("compare now");
 					console.log(this.regresults, this.icresults);
+
+					
+					alert(this.compchartareacontent)
+					this.chart2 = new Chart(this.compchartareacontent);
+						this.chart2.addPlot("default", {
+							type: Pie,
+							font: "normal normal 11pt Tahoma",
+							fontColor: "black",
+							labelOffset: -30,
+							radius: 70
+						}).addSeries("Series A", this.currentData);
+						
+						this.chart2.render();
+						
+						//this needs fix'n
+					/*
+					//domConstruct.empty(this.compchartareacontent);
+					//domConstruct.empty(this.tableareacontent);
+		
+					//newnode = domConstruct.create("span", {innerHTML: "HI"});
+					//this.comppane.appendChild(newnode);
+	
+					// Define the data
+					var chartData = [10000,9200,11811,12000,7662,13887,14200,12222,12000,10009,11288,12099];
+				 
+					console.log('ddd');
+					console.log(this.comppane);
+					// Create the chart within it's "holding" node
+					this.compchart = new Chart(this.compchartareacontent);
+				    
+					// Add the only/default plot
+					this.compchart.addPlot("default", {
+						type: "Bars",
+						markers: true,
+						gap: 5
+					});
+				 
+					// Add axes
+					this.compchart.addAxis("x");
+					this.compchart.addAxis("y", { vertical: true, fixLower: "major", fixUpper: "major" });
+				 
+					// Add the series of data
+					this.compchart.addSeries("Monthly Sales",chartData);
+				 
+					// Render the chart!
+					this.compchart.render();
+					*/
+					console.log('done');
+					
 				
 				}
 			   
@@ -868,8 +926,6 @@ define([
 					}		
 					
 					);
-					
-					//alert(this.currentgeography.url + "/computeHistograms")
 
 					ext = this.clippingGeometry.getExtent();
 
@@ -880,7 +936,6 @@ define([
 					}
 					
 					cvm = parseInt(cv / 2700) + 1;
-					console.log(cvm);
 				
 					geo = dJson.toJson(this.clippingGeometry);
 					mr = dJson.toJson(this.mainLayer.mosaicRule);
@@ -892,10 +947,6 @@ define([
 					
 						tmr = dJson.toJson(this.icmr);
 						if (tmr != mr) {
-							//console.log("ffffffffffffffffffffffffffff");
-							//console.log(mr)
-							//console.log(tmr)
-							//console.log("KKKKKKKKKKKKKKKKKKKKKKKKKKKK");
 							computeHistogramsIC = esriRequest({
 							url: this.currentgeography.url + "/computeHistograms",
 							  content: {
@@ -909,10 +960,12 @@ define([
 							  callbackParamName: "callback",
 							  handleAs: "json"
 							});
-							
-							computeHistogramsIC.then(lang.hitch(this, function(results) {		
+
+							computeHistogramsIC.then(lang.hitch(this, function(results) {	
 								this.icresults = results;
-								this.makeDiffCharts();
+								
+								a = lang.hitch(this,this.makeDiffCharts);
+								a();
 							}))
 					
 						}
@@ -937,8 +990,6 @@ define([
 					this.regresults = undefined;
 					
 					computeHistograms.then(lang.hitch(this, function(results) {
-
-						//console.log(results.histograms);
 						
 						if (this.isClipped == false) {
 						 clipmes = "Full Extent"
@@ -975,9 +1026,6 @@ define([
 							array.forEach(this.currentgeography.colormap, lang.hitch(this,function(ccolormap, c){
 							
 								if (ccolormap[0] == i) {
-								
-								//	alert(colormap)
-									//console.log(ccolormap[0], i);
 								
 									outcolor = "rgb(" + ccolormap[1] + "," + ccolormap[2] + "," + ccolormap[3] + ")" 
 									brightness = ((ccolormap[1] * 299) + (ccolormap[2] * 587) + (ccolormap[3] * 114)) / 1000;
@@ -1121,7 +1169,8 @@ define([
 						this.chartinfo.appendChild(newnode);
 						
 						this.regresults = results;
-						this.makeDiffCharts();
+						a = lang.hitch(this,this.makeDiffCharts);
+						a();
 						
 					})
 					, function(b) { console.log('ERROR'); console.log(b)});
@@ -1469,7 +1518,6 @@ define([
 					inac = dojoquery(this.chartArea.domNode).children(".chartareacontent");
 					this.chartareacontent = inac[0];
 
-					
 					on(this.ChartAreaCloser, "click", lang.hitch(this,function(e){
 						domStyle.set(this.chartArea.domNode, 'display', 'none');
 					}));
@@ -1488,7 +1536,7 @@ define([
 					//  style:"height:" + this.sph + "px !important",
 					//style: "height: 100%; width: 100%;",
 					  title: "Results & Chart",
-					  innerHTML: "<div class='charttitler'></div><div sytle='z-index:2000' class='chartinfo'>Mouse Over Chart for Information -- Scroll Down to see Table</div><div class='chartareacontenter'>no content yet</div><div class='tableareacontenter'></div>"
+					  innerHTML: "<div class='charttitler'></div><div sytle='z-index:2000' class='chartinfo'>Mouse Over Chart for Information -- Scroll Down to see Table</div><div class='chartareacontenter' style='width:330px;height:350px;padding-top:15px'>no content yet</div><div class='tableareacontenter'></div>"
 					});
 					
 					
