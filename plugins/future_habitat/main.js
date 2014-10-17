@@ -849,7 +849,7 @@ define([
 						
 						this.compData = []
 						
-						outable = "<tr style='background:" + "#fff" + "'><td style='width:21%'>" + "Code" + "</td><td style='width:60%'>" + "Name"  + "</td><td style='width:20%'>" + "Area (Acres)" + "</td></tr>"
+						outable = "<tr style='background:" + "#fff" + "'><td style='width:21%'>" + "Code" + "</td><td style='width:60%'>" + "Name"  + "</td><td style='width:20%'>" + "Change (Acres)" + "</td></tr>"
 						
 						//this.totalarea =  0;
 						
