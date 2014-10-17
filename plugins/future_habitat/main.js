@@ -374,7 +374,7 @@ define([
 						//  style:"height:" + this.sph + "px !important",
 						//style: "display: none",
 						  title: "Compare & Chart",
-						  innerHTML: "<div class='charttitler'></div><div sytle='z-index:2000' class='chartinfo'>Mouse Over Chart for Information -- Scroll Down to see Table</div><div class='chartareacontenter'>no content yet</div><div class='tableareacontenter'></div>"
+						  innerHTML: "<div class='charttitler'></div><div sytle='z-index:2000' class='chartinfo'>Scroll Down to see Table</div><div class='chartareacontenter'>no content yet</div><div class='tableareacontenter'></div>"
 						});
 						
 						parser.parse();
@@ -384,6 +384,9 @@ define([
 					
 					inac = dojoquery(this.comppane.domNode).children(".tableareacontenter");
 					this.comptableareacontent = inac[0];
+					
+					inac = dojoquery(this.comppane.domNode).children(".chartinfo");
+					this.compchartinfo = inac[0];
 						
 						this.tabpan.addChild(this.comppane);
 					
@@ -894,7 +897,7 @@ define([
 							acers = acers2 - acers;
 							
 							if (histo != 0) {
-							this.compData.push({text: "", y: acers, tooltip: i + "", fill: outcolor, stroke: {color: "rgb(255,255,255)"}})
+							this.compData.push({text: this.currentgeography.labels[i + ""], y: acers, tooltip: i + "", fill: outcolor, stroke: {color: "rgb(255,255,255)"}})
 							
 							//this.totalarea = acers + this.totalarea
 			
@@ -910,6 +913,9 @@ define([
 						
 						outable = "<center><table style='border:1px solid black'>" + outable + "</table></center>" 
 						
+						this.compData.reverse();
+						
+						console.log(this.compData);
 					
 					domConstruct.empty(this.compchartareacontent);
 					domConstruct.empty(this.comptableareacontent);
@@ -925,6 +931,55 @@ define([
 							labelOffset: -30,
 							radius: 70
 						}).addSeries("Series A", this.compData);
+						
+						
+						
+					this.compchart.connectToPlot("default",lang.hitch(this,function(evt) {
+							
+							type = evt.type; shape = evt.shape;
+							
+							if(type == "onmouseover") {
+							
+							// Store the original color
+							if(!shape.originalFill) {
+								shape.originalFill = shape.fillStyle;
+								
+								shadeRGBColor = function(color, percent) {
+									color = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+									f=(color + "").split(","),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=parseInt(f[0].slice(4)),G=parseInt(f[1]),B=parseInt(f[2]);
+									return "rgb("+(Math.round((t-R)*p)+R)+","+(Math.round((t-G)*p)+G)+","+(Math.round((t-B)*p)+B)+")";
+								}
+								
+								shape.altFill = shadeRGBColor(shape.originalFill,0.30)
+							}
+						
+								shape.setFill(shape.altFill);
+								
+								domConstruct.empty(this.compchartinfo);
+								
+								//console.log(evt.index)
+								
+								newnode = domConstruct.create("span", {innerHTML: this.compData[evt.index].text + " " + this.compData[evt.index].y});
+								this.compchartinfo.appendChild(newnode);
+								
+								
+								
+							}
+				
+					
+							if(type == "onmouseout") {
+								// Set the fill the original fill
+								shape.setFill(shape.originalFill);
+								
+								domConstruct.empty(this.compchartinfo);
+								newnode = domConstruct.create("span", {innerHTML: "Scroll Down to see Table"});
+								this.compchartinfo.appendChild(newnode);
+								
+							}
+						
+		
+						}));
+						
 						
 						this.compchart.render();
 						
