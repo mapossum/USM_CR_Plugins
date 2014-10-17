@@ -292,8 +292,6 @@ define([
 				
 			     resize: function(w, h) {
 				 
-					
-				 
 					cdg = domGeom.position(this.container);
 					console.log(this.mainpane.domNode);
 					
@@ -323,6 +321,10 @@ define([
 					
 					if (this.chart != undefined) {
 						this.chart.resize(cdg.w-50, ch - 80)
+					}
+					
+					if (this.compchart != undefined) {
+						this.compchart.resize(cdg.w-50, ch - 150)
 					}
 					
 					this.tabpan.layout();
@@ -910,10 +912,13 @@ define([
 						
 					
 					domConstruct.empty(this.compchartareacontent);
-					chartData = [-10000,9200,11811,12000,7662,13887,-14200,12222,12000,10009,11288,-12099];
+					domConstruct.empty(this.comptableareacontent);
 					
-					this.chart2 = new Chart(this.compchartareacontent);
-						this.chart2.addPlot("default", {
+						newnode = domConstruct.create("span", {innerHTML: outable});
+						this.comptableareacontent.appendChild(newnode);
+					
+					this.compchart = new Chart(this.compchartareacontent);
+						this.compchart.addPlot("default", {
 							type: "Bars",
 							font: "normal normal 11pt Tahoma",
 							fontColor: "black",
@@ -921,7 +926,7 @@ define([
 							radius: 70
 						}).addSeries("Series A", this.compData);
 						
-						this.chart2.render();
+						this.compchart.render();
 						
 						//this needs fix'n
 					/*
