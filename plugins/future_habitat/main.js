@@ -836,16 +836,90 @@ define([
 					console.log("compare now");
 					console.log(this.regresults, this.icresults);
 
+						if (this.isClipped == false) {
+						 clipmes = "Full Extent"
+						} else {
+						 clipmes = "User-defined Polygon Extent"
+						};
+						
+						//this.ctitle = this.currentgeography.name + " - " + clipmes + "<br>" + this.subTitle;
+						
+						
+						this.compData = []
+						
+						outable = "<tr style='background:" + "#fff" + "'><td style='width:21%'>" + "Code" + "</td><td style='width:60%'>" + "Name"  + "</td><td style='width:20%'>" + "Area (Acres)" + "</td></tr>"
+						
+						//this.totalarea =  0;
+						
+						boxes = ""
+						texts = ""
+						count = 0
+						
+						array.forEach(this.regresults.histograms[0].counts, lang.hitch(this,function(histo, i){
+						
+							//alert(this.currentgeography.colormap[i])
+						histo2 = this.icresults.histograms[0].counts[i]
+						
+							//for (var c=0; c<this.currentgeography.colormap; c++) {
+						//	
+						//		currentcolor = this.currentgeography.colormap[c];
+						//		alert(currentcolor);
+						//		if (currentcolor[0] == i) {
+						//			alert(currentcolor);
+						//		}
+						//	}
+							
+							array.forEach(this.currentgeography.colormap, lang.hitch(this,function(ccolormap, c){
+							
+								if (ccolormap[0] == i) {
+								
+									outcolor = "rgb(" + ccolormap[1] + "," + ccolormap[2] + "," + ccolormap[3] + ")" 
+									brightness = ((ccolormap[1] * 299) + (ccolormap[2] * 587) + (ccolormap[3] * 114)) / 1000;
+									
+									if (brightness > 150) {
+										textColor = "#000";
+									} else {
+										textColor = "#fff";
+									}
+									
+								}
+									
+							}));
+							
+							acers = parseInt(histo * (cvm * cvm) * 0.000247105)
+							acers2 = parseInt(histo2 * (cvm * cvm) * 0.000247105)
+							
+							acers = acers2 - acers;
+							
+							if (histo != 0) {
+							this.compData.push({text: "", y: acers, tooltip: i + "", fill: outcolor, stroke: {color: "rgb(255,255,255)"}})
+							
+							//this.totalarea = acers + this.totalarea
+			
+								outable =  outable + "<tr style='background:" + outcolor + "'><td style='width:21%;color:" + textColor + "'>" + i + "</td><td style='width:60%;color:" + textColor + "'>" + this.currentgeography.labels[i + ""] + "</td><td style='width:20%;color:" + textColor + "'>" + acers.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</td></tr>"
+								
+								boxes = boxes + '<rect x="0" y ="' + (count * 30) + '" width="30" height="20" style="fill:' + outcolor + ';stroke-width:1;stroke:' + outcolor + '" />'
+								texts = texts + '<text x="35" y="' + (((count + 1) * 30) - 15) + '" fill="black">' + this.currentgeography.labels[i + ""] + '</text>'
+								count = count + 1;
+							}
+							
+						
+						}));
+						
+						outable = "<center><table style='border:1px solid black'>" + outable + "</table></center>" 
+						
 					
-					alert(this.compchartareacontent)
+					domConstruct.empty(this.compchartareacontent);
+					chartData = [-10000,9200,11811,12000,7662,13887,-14200,12222,12000,10009,11288,-12099];
+					
 					this.chart2 = new Chart(this.compchartareacontent);
 						this.chart2.addPlot("default", {
-							type: Pie,
+							type: "Bars",
 							font: "normal normal 11pt Tahoma",
 							fontColor: "black",
 							labelOffset: -30,
 							radius: 70
-						}).addSeries("Series A", this.currentData);
+						}).addSeries("Series A", this.compData);
 						
 						this.chart2.render();
 						
