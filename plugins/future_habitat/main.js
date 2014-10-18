@@ -410,6 +410,13 @@ define([
 					
 					  nslidernodetitle = domConstruct.create("div", {innerHTML: "<b>" + svar.name +"</b>", style: "padding-top:15px"});
 					  this.mainpane.domNode.appendChild(nslidernodetitle);
+					  
+					  if (svar.selected != undefined) {
+						_selected = svar.selected;
+					  } else {
+					    _selected = 0;
+					  
+					  }
 					
 					  if (svar.type != "radio") {
 				
@@ -430,10 +437,10 @@ define([
 				
 				
 						steps = svar.values.length;
-						
+
 						nowslider = new HorizontalSlider({
 							name: svar.name,
-							value: 0,
+							value: _selected,
 							minimum: 0,
 							maximum: svar.values.length -1,
 							showButtons:false,
@@ -472,11 +479,7 @@ define([
 							
 							isselected = false;
 									
-							if (i == 0) {
-								isselected = true;
-							}
-							
-							if (slr.selected == true) {
+							if (i == _selected) {
 								isselected = true;
 							}
 							
@@ -1956,11 +1959,11 @@ define([
 				
                getState: function () { 
 			   
-				console.log('getstate');
+//				console.log('getstate');
 			   
-				console.log(this.controls);
+//				console.log(this.controls);
 			   
-				state = this.controls;
+				state = this.currentgeography;
 			   
 				return state;
 	
@@ -1970,9 +1973,13 @@ define([
 				
                setState: function (state) { 
 				
-				this.controls = state;
+			
+				this.currentgeography = state;
 				
 				this.render();
+				
+				this.changeGeography(state);
+				
 				
 				
 				},

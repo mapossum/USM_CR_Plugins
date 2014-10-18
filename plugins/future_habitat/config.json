@@ -28,6 +28,7 @@
                 {
                     "name": "Choose a Scenario Year",
                     "index": 3,
+					"selected" : 2,
                     "values": [
                         {
                             "name": "Initial<br>Condition",
@@ -52,6 +53,7 @@
                     "name": "Choose a Management Scenario",
                     "index": 2,
 					"type": "radio",
+					"selected" : 2,
                     "values": [
                         {
                             "name": "Allow marsh to spread into other areas",
